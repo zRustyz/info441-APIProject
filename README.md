@@ -5,24 +5,7 @@ For our project, we would like to develop an external site to be able to recomme
 # **Technical Description**
 
 ## Architectural Diagram
-
-![](RackMultipart20231110-1-ld28fe_html_52f032282b43008d.png)
-
-| **GET "/signin"** | Signs in and authenticates a user |
-| --- | --- |
-| **GET "/user/{id}"** | Gets all posts from a specific user
- |
-| **GET "/api/urls/preview"** | Gets the YouTube video preview with all metadata and embed |
-| **POST "/api/posts"** | Creates a new post |
-
-##
-
-
-##
-
-
-##
-
+![Architectural Diagram](img/architecturaldiagram.png)
 
 ## Summary table with user stories
 
@@ -36,8 +19,22 @@ For our project, we would like to develop an external site to be able to recomme
 | P2 | Curator | As a curator, I should be able to delete videos shared by me in the event I accidentally uploaded the link to a video I did not mean to upload | We will implement a delete request that allows the user to delete the videos in the database if the username field of that video matches their username |
 
 ## Endpoints
+| Endpoint | Usage |
+| --- | --- |
+| **GET "/signin"** | Signs in and authenticates a user |
+| **GET "/user/{id}"** | Gets all posts from a specific user |
+| **GET "/api/urls/preview"** | Gets the YouTube video preview with all metadata and embed code |
+| **GET "/api/posts"** | Gets all posts |
+| **POST "/api/posts"** | Creates a new post |
+| **DELETE "/api/posts"** | Deletes a post |
+| **POST "/api/posts/like"** | Likes a post |
+| **POST "/api/posts/unlike"** | Unlikes a post |
+| **GET "/api/comments"** | Gets the comments for a post |
+| **POST "/api/comments"** | Adds a comment to a post |
+| **DELETE "/api/comments"** | Deletes a comment on a post |
 
-![](RackMultipart20231110-1-ld28fe_html_73b503f6ca3965c0.png)
+## Database Schema
+![Database Diagram](img/db.png)
 
 ## Miscellaneous Notes
 
