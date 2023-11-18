@@ -6,7 +6,7 @@ let models = {};
 main().catch(err => console.log(err))
 async function main(){
   console.log("connecting to mongodb");
-  await mongoose.connect(`mongodb+srv://test-user:${process.env.MONGO_PW}@cluster0.nhmgs9q.mongodb.net/a6`);
+  await mongoose.connect(`mongodb+srv://test-user:${process.env.MONGO_PW}@cluster0.nhmgs9q.mongodb.net/ytvideosharer`);
 
   console.log("succesffully connected to mongodb!");
 
