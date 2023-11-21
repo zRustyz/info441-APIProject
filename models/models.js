@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import "dotenv/config"
+import "dotenv/config";
 
 let models = {};
 
