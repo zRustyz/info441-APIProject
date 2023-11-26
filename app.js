@@ -28,9 +28,9 @@ app.use(sessions({
   resave: false,
   saveUninitialized: false,
   cookie: {
-      httpOnly: true,
-      secure: false, // set this to true on production
-      maxAge: oneDay,
+    httpOnly: true,
+    secure: false, // set this to true on production
+    maxAge: oneDay,
   }
 }));
 
