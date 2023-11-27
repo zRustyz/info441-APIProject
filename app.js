@@ -9,7 +9,7 @@ import sessions from "express-session";
 // Import custom modules for database models, API routes, and authentication
 import models from "./models/models.js";
 import apiRouter from "./routes/api/api.js";
-import authProvider from "./models/auth.js";
+import authProvider from "./auth/AuthProvider.js";
 
 // Initialize the Express app
 const app = express();
@@ -40,6 +40,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// API endpoint router
+app.use("/api", apiRouter);
+
+// Sign in endpoint
+app.get("/signin", authProvider.login({
+  scopes: [],
+  redirectUri: process.env.REDIRECT_URI,
+  successRedirect: "/"
+}));
+
+// Sign out endpoint
+app.get("/signout", authProvider.logout({
+  postLogoutRedirectUri: process.env.POST_LOGOUT_REDIRECT_URI
+}));
+
+// Redirect endpoint
+app.post("/redirect", authProvider.handleRedirect());
 
 
 export default app;

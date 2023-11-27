@@ -1,6 +1,6 @@
 import { CryptoProvider, ConfidentialClientApplication, InteractionRequiredAuthError, ResponseMode } from '@azure/msal-node';
 import fetch from 'node-fetch';
-import { msalConfig } from './authconfig.js';
+import { msalConfig } from '../authConfig.js';
 
 class AuthProvider {
     msalConfig;
