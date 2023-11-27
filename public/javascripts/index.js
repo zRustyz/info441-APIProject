@@ -84,3 +84,26 @@ async function previewVideo(){
       }
   }
 }
+
+async function postVideo(){
+  document.getElementById("postStatus").innerHTML = "sending data..."
+  let url = document.getElementById("video-input").value;
+  let description = document.getElementById("description-input").value;
+  let category = document.getElementById("category-select").value;
+
+  try{
+      await fetchJSON(`api/post`, {
+          method: "POST",
+          body: { url: url, description: description, category: category }
+      })
+  }catch(error){
+      document.getElementById("postStatus").innerText = "Error"
+      throw(error)
+  }
+  document.getElementById("video-input").value = "";
+  document.getElementById("description-input").value = "";
+  document.getElementById("video-preview").innerHTML = "";
+  document.getElementById("postStatus").innerHTML = "successfully uploaded"
+  loadPosts();
+
+}

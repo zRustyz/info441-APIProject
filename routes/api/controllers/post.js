@@ -3,6 +3,31 @@ import { getVideoPreview } from "../utils/youtube.js";
 
 const router = express.Router();
 
+router.post("/", async (req, res) => {
+  if (req.session.isAuthenticated) {
+    try {
+      const newPost = new req.models.Post({
+        video_id: req.body.url,
+        description: req.body.description,
+        category: req.body.category,
+        created_date: Date.now(),
+        username: req.session.account.username,
+      });
+
+      await newPost.save();
+
+      res.json({"status": "success"});
+    } catch (error) {
+      res.status(500).json({"status": "error", "error": error});
+    }
+  } else {
+    res.status(401).json({
+      status: "error",
+      error: "not logged in"
+   });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     let posts;

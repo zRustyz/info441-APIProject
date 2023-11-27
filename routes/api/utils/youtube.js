@@ -46,7 +46,9 @@ export async function getVideoPreview (url) {
     console.log(videoData);
     return (`
       <div class="card shadow-sm">
-        <img src="${videoData.snippet.thumbnails.maxres.url}" class="card-img-top">
+        <a href="https://youtu.be/${videoData.id}" target="_blank" rel="noopener noreferrer">
+          <img src="${videoData.snippet.thumbnails.high.url}" class="card-img-top">
+        </a>
         <div class="card-body">
           <h5 class="card-title">${videoData.snippet.title}</h5>
           <p class="card-text">description of video provided by user not by youtube</p>

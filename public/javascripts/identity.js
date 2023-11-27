@@ -6,7 +6,7 @@ async function loadIdentity(){
   try {
     let identityInfo = await fetchJSON(`api/user/myIdentity`)
 
-    if(identityInfo.status == "loggedin"){
+    if(identityInfo.status == "loggedin") { // logged in
       myIdentity = identityInfo.userInfo.username;
       identity_div.innerHTML = `
       <a href="/userInfo.html?user=${encodeURIComponent(identityInfo.userInfo.username)}">${escapeHTML(identityInfo.userInfo.name)} (${escapeHTML(identityInfo.userInfo.username)})</a>
@@ -14,9 +14,13 @@ async function loadIdentity(){
       if(document.getElementById("make_post_div")){
         document.getElementById("make_post_div").classList.remove("d-none");
       }
+      // Enable the create post button
+      document.getElementById("create-post-button").classList.remove("disabled");
+      document.getElementById("create-post-button").classList.add("text-white");
+      document.getElementById("create-post-button").ariaDisabled = false;
       Array.from(document.getElementsByClassName("new-comment-box")).forEach(e => e.classList.remove("d-none"))
       Array.from(document.getElementsByClassName("heart-button-span")).forEach(e => e.classList.remove("d-none"));
-    } else { //logged out
+    } else { // logged out
       myIdentity = undefined;
       identity_div.innerHTML = `
       <a href="signin" class="btn btn-outline-secondary" role="button">Sign in</a>`;
