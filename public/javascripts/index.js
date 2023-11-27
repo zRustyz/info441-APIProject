@@ -1,4 +1,9 @@
 async function init(){
+  let urlInput = document.getElementById("video-input");
+  urlInput.onkeyup = previewVideo;
+  urlInput.onchange = previewVideo;
+  urlInput.onclick = previewVideo;
+
   await loadIdentity();
   loadPosts();
 }
@@ -39,3 +44,43 @@ async function loadPosts(){
   document.getElementById("pageContent").innerHTML = postsHtml;
 }
 
+let lastTypedUrl = ""
+let lastTypedTime = Date.now();
+let lastVideoPreviewed = "";
+async function previewVideo(){
+  // document.getElementById("postStatus").innerHTML = "";
+  let url = document.getElementById("video-input").value;
+
+  // make sure we are looking at a new url (they might have clicked or something, but not changed the text)
+  if (url != lastTypedUrl) {
+
+    //In order to not overwhelm the server,
+    // if we recently made a request (in the last 0.5s), pause in case the user is still typing
+    lastTypedUrl = url;
+    let timeSinceLastType = Date.now() - lastTypedTime
+    lastTypedTime = Date.now()
+    if(timeSinceLastType < 500){
+      await new Promise(r => setTimeout(r, 1000)) // wait 1 second
+    }
+    // if after pausing the last typed url is still our current url, then continue
+    // otherwise, they were typing during our 1 second pause and we should stop trying
+    // to preview this outdated url
+    if(url != lastTypedUrl){
+      return;
+    }
+
+      if(url != lastVideoPreviewed) { // make sure this isn't the one we just previewd
+        lastVideoPreviewed = url; // mark this url as one we are previewing
+          document.getElementById("video-preview").innerHTML = "Loading preview..."
+          try{
+              let response = await fetch(`api/video/preview?url=${url}`);
+              let previewHtml = await response.text();
+              if (url == lastVideoPreviewed) {
+                  document.getElementById("video-preview").innerHTML = previewHtml;
+              }
+          }catch(error){
+              document.getElementById("video-preview").innerHTML = "There was an error: " + error;
+          }
+      }
+  }
+}

@@ -11,7 +11,7 @@ async function main(){
   console.log("succesffully connected to mongodb!");
 
   const postSchema = new mongoose.Schema({
-    url: String,
+    video_id: String,
     description: String,
     created_date: Date,
     username: String,

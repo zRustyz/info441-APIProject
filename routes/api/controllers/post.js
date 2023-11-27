@@ -1,4 +1,5 @@
 import express from "express";
+import { getVideoPreview } from "../utils/youtube.js";
 
 const router = express.Router();
 
@@ -16,11 +17,12 @@ router.get("/", async (req, res) => {
           return {
             username: post.username,
             description: post.description,
-            htmlPreview: await getURLPreview(post.url),
+            htmlPreview: await getVideoPreview(post.video_id),
             id: post._id,
             likes: post.likes
           };
         } catch (error) {
+          console.log(error);
           return error;
         }
       })

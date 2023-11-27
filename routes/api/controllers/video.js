@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/preview", async (req, res) => {
   try {
-    const urlPreview = await getURLPreview(req.query.url);
+    const urlPreview = await getVideoPreview(req.query.url);
     res.send(urlPreview);
   } catch (err) {
     console.log(err);
