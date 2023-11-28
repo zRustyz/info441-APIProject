@@ -12,6 +12,4 @@ router.get("/preview", async (req, res) => {
   }
 });
 
-
-
 export default router;

@@ -1,5 +1,5 @@
 import express from "express";
-import { getVideoPreview } from "../utils/youtube.js";
+import { extractVideoID, fetchVideoData, getVideoPreview } from "../utils/youtube.js";
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ router.post("/", async (req, res) => {
   if (req.session.isAuthenticated) {
     try {
       const newPost = new req.models.Post({
-        video_id: req.body.url,
+        video_id: extractVideoID(req.body.url),
         description: req.body.description,
         category: req.body.category,
         created_date: Date.now(),
@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
           return {
             username: post.username,
             description: post.description,
-            htmlPreview: await getVideoPreview(post.video_id),
+            videoData: await fetchVideoData(post.video_id),
             id: post._id,
             likes: post.likes
           };

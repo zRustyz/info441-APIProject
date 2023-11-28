@@ -1,4 +1,21 @@
 async function init(){
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.getElementsByClassName('needs-validation');
+  // Loop over them and prevent submission
+  var validation = Array.prototype.filter.call(forms, function(form) {
+    form.addEventListener('submit', function(event) {
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        event.preventDefault();
+        postVideo();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+
+
   let urlInput = document.getElementById("video-input");
   urlInput.onkeyup = previewVideo;
   urlInput.onchange = previewVideo;
@@ -9,36 +26,44 @@ async function init(){
 }
 
 async function loadPosts(){
-  document.getElementById("pageContent").innerText = "Loading...";
+  document.getElementById("pageContent").innerHTML = `
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  `;
   let postsJson = await fetchJSON(`api/post`)
-
+  // Format the posts
   let postsHtml = postsJson.map(postInfo => {
       return `
-      <div class="post">
-          ${escapeHTML(postInfo.description)}
-          ${postInfo.htmlPreview}
+      <div class="card shadow-sm">
+        <a href="https://www.youtube.com/watch?v=${escapeHTML(postInfo.videoData.id)}" target="_blank" rel="noopener noreferrer">
+          <img src="${escapeHTML(postInfo.videoData.snippet.thumbnails.high.url)}" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
+          <p class="card-text">${escapeHTML(postInfo.description)}</p>
+          <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
           <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${escapeHTML(postInfo.created_date)}</div>
-          <div class="post-interactions">
-              <div>
-                  <span title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}"> ${postInfo.likes ? `${postInfo.likes.length}` : 0} likes </span> &nbsp; &nbsp;
-                  <span class="heart-button-span ${myIdentity? "": "d-none"}">
-                      ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
-                          `<button class="heart_button" onclick='unlikePost("${postInfo.id}")'>&#x2665;</button>` :
-                          `<button class="heart_button" onclick='likePost("${postInfo.id}")'>&#x2661;</button>`}
-                  </span>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
+                `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
+                `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
+              <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
+            </div>
+            <br>
+            <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
+            <div id='comments-box-${postInfo.id}' class="comments-box d-none">
+              <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
+              <div id='comments-${postInfo.id}'></div>
+              <div class="new-comment-box ${myIdentity? "": "d-none"}">
+                New Comment:
+                <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
+                <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
               </div>
-              <br>
-              <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
-              <div id='comments-box-${postInfo.id}' class="comments-box d-none">
-                  <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
-                  <div id='comments-${postInfo.id}'></div>
-                  <div class="new-comment-box ${myIdentity? "": "d-none"}">
-                      New Comment:
-                      <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
-                      <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
-                  </div>
-              </div>
+            </div>
           </div>
+        </div>
       </div>`
   }).join("\n");
   document.getElementById("pageContent").innerHTML = postsHtml;
@@ -77,6 +102,11 @@ async function previewVideo(){
               let previewHtml = await response.text();
               if (url == lastVideoPreviewed) {
                   document.getElementById("video-preview").innerHTML = previewHtml;
+              }
+              if (previewHtml) {
+                document.getElementById("post-button").removeAttribute("disabled");
+              } else {
+                document.getElementById("post-button").setAttribute("disabled", "disabled");
               }
           }catch(error){
               document.getElementById("video-preview").innerHTML = "There was an error: " + error;

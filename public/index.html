@@ -116,32 +116,35 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="mb-3">
+        <form novalidate class="needs-validation">
+          <div class="mb-3 form-row">
             <label for="video-input" class="col-form-label">Video URL:</label>
-            <input type="text" class="form-control" id="video-input">
+            <input type="text" class="form-control" id="video-input" required>
+            <div class="invalid-feedback">Invalid URL.</div>
           </div>
           <div id="video-preview"></div>
-          <div class="mb-3">
+          <div class="mb-3 form-row">
             <label for="description-input" class="col-form-label">Description:</label>
-            <textarea class="form-control" id="description-input"></textarea>
+            <textarea class="form-control" id="description-input" required></textarea>
+            <div class="invalid-feedback">Please write a description.</div>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 form-row">
             <label for="category-select" class="form-label">Category</label>
-            <select class="form-select" id="category-select" name="category">
+            <select class="form-select" id="category-select" name="category" required>
               <option selected>Choose...</option>
               <option value="funny">Funny</option>
               <option value="gaming">Gaming</option>
               <option value="entertainment">Entertainment</option>
               <!-- Add more categories as needed -->
             </select>
+            <div class="invalid-feedback">uhhh please choose a category.</div>
+          </div>
+          <div class="my-4">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="post-button" disabled>Post</button>
           </div>
           <p id="postStatus"></p>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="postVideo()">Post</button>
       </div>
     </div>
   </div>

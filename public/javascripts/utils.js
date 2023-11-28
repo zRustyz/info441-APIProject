@@ -8,6 +8,9 @@ const escapeHTML = str => !str ? str : str.replace(/[&<>'"]/g,
         '"': '&quot;'
     }[tag]));
 
+function numberWithCommas (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
 async function fetchJSON(route, options){
     let response

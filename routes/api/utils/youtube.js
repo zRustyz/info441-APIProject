@@ -10,7 +10,7 @@ const escapeHTML = str => String(str).replace(/[&<>'"]/g,
     '"': '&quot;'
   }[tag]));
 
-function extractVideoID (url) {
+export function extractVideoID (url) {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/);
   if (match && match.length === 2) {
     return match[1];
@@ -20,6 +20,7 @@ function extractVideoID (url) {
 }
 
 export async function fetchVideoData (videoID) {
+  console.log(videoID);
   const youtube = google.youtube({
     version: "v3",
     auth: process.env.YT_API_KEY
@@ -46,12 +47,11 @@ export async function getVideoPreview (url) {
     console.log(videoData);
     return (`
       <div class="card shadow-sm">
-        <a href="https://youtu.be/${videoData.id}" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.youtube.com/watch?v=${videoData.id}" target="_blank" rel="noopener noreferrer">
           <img src="${videoData.snippet.thumbnails.high.url}" class="card-img-top">
         </a>
         <div class="card-body">
           <h5 class="card-title">${videoData.snippet.title}</h5>
-          <p class="card-text">description of video provided by user not by youtube</p>
           <p class="card-text"><small class="text-body-secondary">${numberWithCommas(videoData.statistics.viewCount)} views</small></p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
@@ -63,12 +63,12 @@ export async function getVideoPreview (url) {
           </div>
         </div>
       </div>
-    `)
+    `);
   } else {
     return null;
   }
 }
 
-function numberWithCommas (x) {
+export function numberWithCommas (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
