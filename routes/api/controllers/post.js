@@ -58,4 +58,46 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.post("/like", async (req, res) => {
+  if (req.session.isAuthenticated) {
+    try {
+      let posts = await req.models.Post.find({ _id: req.body.postID });
+      if (!posts[0].likes || !posts[0].likes.includes(req.session.account.username)) {
+        await req.models.Post.updateOne({ _id: req.body.postID }, { $push: { likes: req.session.account.username }});
+      }
+
+      res.json({"status": "success"});
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({"status": "error", "error": error});
+    }
+  } else {
+    res.status(401).json({
+      status: "error",
+      error: "not logged in"
+   });
+  }
+});
+
+router.post("/unlike", async (req, res) => {
+  if (req.session.isAuthenticated) {
+    try {
+      let posts = await req.models.Post.find({ _id: req.body.postID });
+      if (posts[0].likes.includes(req.session.account.username)) {
+        console.log("test");
+        await req.models.Post.findByIdAndUpdate(req.body.postID, { $pull: { likes: req.session.account.username }});
+      }
+      res.json({"status": "success"});
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({"status": "error", "error": error});
+    }
+  } else {
+    res.status(401).json({
+      status: "error",
+      error: "not logged in"
+   });
+  }
+});
+
 export default router;

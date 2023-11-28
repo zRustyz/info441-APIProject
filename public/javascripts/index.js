@@ -80,7 +80,7 @@ async function loadPosts(){
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
-                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
+                  `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
                   `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
                 <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
               </div>
@@ -173,4 +173,21 @@ async function postVideo(){
   showAlert("success", "Your post was successfully submitted!");
 
   return;
+}
+
+async function likePost(postID){
+  await fetchJSON(`api/post/like`, {
+      method: "POST",
+      body: {postID: postID}
+  })
+  loadPosts();
+}
+
+
+async function unlikePost(postID){
+  await fetchJSON(`api/post/unlike`, {
+      method: "POST",
+      body: {postID: postID}
+  })
+  loadPosts();
 }
