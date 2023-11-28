@@ -100,4 +100,21 @@ router.post("/unlike", async (req, res) => {
   }
 });
 
+router.delete("/:postId", async (req, res) => {
+  if (req.session.isAuthenticated) {
+    try {
+      await req.models.Post.findByIdAndDelete(req.params.postId);
+      res.json({"status": "success"});
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({"status": "error", "error": error});
+    }
+  } else {
+    res.status(401).json({
+      status: "error",
+      error: "not logged in"
+    });
+  }
+});
+
 export default router;

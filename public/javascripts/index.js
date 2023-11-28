@@ -66,6 +66,7 @@ async function loadPosts(){
   let postsJson = await fetchJSON(`api/post`)
   // Format the posts
   let postsHtml = postsJson.map(postInfo => {
+    let deleteButton = myIdentity === postInfo.username ? `<button onclick='deletePost("${postInfo.id}")'>Delete</button>` : '';
       return `
       <div class="col">
         <div class="card shadow-sm">
@@ -83,6 +84,7 @@ async function loadPosts(){
                   `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
                   `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
                 <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
+                ${deleteButton}
               </div>
               <br>
               <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
@@ -190,4 +192,16 @@ async function unlikePost(postID){
       body: {postID: postID}
   })
   loadPosts();
+}
+
+async function deletePost(postId){
+  try {
+    await fetch(`api/post/${postId}`, {
+      method: "DELETE"
+    });
+    loadPosts();
+    showAlert("success", "Post deleted successfully.");
+  } catch (error) {
+    showAlert("danger", "Error deleting post.");
+  }
 }

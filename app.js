@@ -58,5 +58,8 @@ app.get("/signout", authProvider.logout({
 // Redirect endpoint
 app.post("/redirect", authProvider.handleRedirect());
 
+app.listen(3000, () => {
+  console.log(`Listening on http://localhost:3000`);
+});
 
 export default app;
