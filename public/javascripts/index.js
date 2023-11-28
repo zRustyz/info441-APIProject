@@ -1,15 +1,20 @@
-async function init(){
+async function init () {
+  // Fetch the modal element
+  let modal = new bootstrap.Modal("#createPost");
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.getElementsByClassName('needs-validation');
+  let forms = document.getElementsByClassName('needs-validation');
   // Loop over them and prevent submission
-  var validation = Array.prototype.filter.call(forms, function(form) {
+  let validation = Array.prototype.filter.call(forms, function(form) {
     form.addEventListener('submit', function(event) {
       if (form.checkValidity() === false) {
         event.preventDefault();
         event.stopPropagation();
-      } else {
+      } else { // If the form is valid
         event.preventDefault();
-        postVideo();
+        postVideo()
+          .then(modal.hide())
+          .catch(modal.hide())
+          .then(showAlert("danger", "There was an error submitting your post."));
       }
       form.classList.add('was-validated');
     }, false);
@@ -23,6 +28,33 @@ async function init(){
 
   await loadIdentity();
   loadPosts();
+}
+
+function showAlert (context, message) {
+  // Fetch the main content element
+  let alertBox = document.getElementById("alert-box");
+
+  // Create the alert element and add the correct classes and role to it
+  let alertElement = document.createElement("div");
+  alertElement.classList.add("alert");
+  alertElement.classList.add("alert-dismissible");
+  alertElement.classList.add("fade");
+  alertElement.classList.add("show");
+  alertElement.classList.add(`alert-${context}`);
+  alertElement.role = "alert";
+
+  let alertButton = document.createElement("button");
+  alertButton.classList.add("btn-close");
+  alertButton.setAttribute("data-bs-dismiss", "alert");
+  alertButton.setAttribute("aria-label", "Close");
+
+  // Add the message to the alert
+  alertElement.textContent = message;
+
+  alertElement.append(alertButton);
+
+  // Append the alert to the alert box
+  alertBox.append(alertElement);
 }
 
 async function loadPosts(){
@@ -69,6 +101,7 @@ async function loadPosts(){
       </div>`
   }).join("\n");
   document.getElementById("pageContent").innerHTML = postsHtml;
+  return;
 }
 
 let lastTypedUrl = ""
@@ -135,7 +168,9 @@ async function postVideo(){
   document.getElementById("video-input").value = "";
   document.getElementById("description-input").value = "";
   document.getElementById("video-preview").innerHTML = "";
-  document.getElementById("postStatus").innerHTML = "successfully uploaded"
-  loadPosts();
 
+  await loadPosts();
+  showAlert("success", "Your post was successfully submitted!");
+
+  return;
 }
