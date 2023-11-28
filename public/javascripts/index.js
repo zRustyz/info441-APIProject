@@ -63,7 +63,7 @@ async function loadPosts(){
       <span class="visually-hidden">Loading...</span>
     </div>
   `;
-  let postsJson = await fetchJSON(`api/post`)
+  let postsJson = await fetchJSON(`api/post`);
   // Format the posts
   let postsHtml = postsJson.map(postInfo => {
     let deleteButton = myIdentity === postInfo.username ? `<button onclick='deletePost("${postInfo.id}")'>Delete</button>` : '';
@@ -204,4 +204,49 @@ async function deletePost(postId){
   } catch (error) {
     showAlert("danger", "Error deleting post.");
   }
+}
+
+async function loadComments(postId) {
+  const commentsDiv = document.getElementById(`comments-${postId}`);
+  try {
+    const comments = await fetchJSON(`api/comment?postID=${postId}`);
+    const commentsHtml = comments.map(comment => `
+      <div class="comment">
+        <strong>${escapeHTML(comment.username)}:</strong>
+        <p>${escapeHTML(comment.comment)}</p>
+      </div>
+    `).join("\n");
+    commentsDiv.innerHTML = commentsHtml;
+  } catch (error) {
+    commentsDiv.innerHTML = "Failed to load comments.";
+  }
+}
+
+async function postComment(postId) {
+  const commentInput = document.getElementById(`new-comment-${postId}`);
+  const commentText = commentInput.value;
+  if (!commentText.trim()) return; // Prevent empty comments
+
+  try {
+    await fetchJSON(`api/comment`, {
+      method: "POST",
+      body: { newComment: commentText, postID: postId }
+    });
+    commentInput.value = ''; // Clear the input field
+    loadComments(postId); // Reload comments to show the new one
+  } catch (error) {
+    showAlert("danger", "Failed to post comment.");
+  }
+}
+
+function toggleComments(postId) {
+  const commentsBox = document.getElementById(`comments-box-${postId}`);
+  if (commentsBox.classList.contains("d-none")) {
+    loadComments(postId); // Load comments when showing them
+  }
+  commentsBox.classList.toggle("d-none");
+}
+
+function refreshComments(postId) {
+  loadComments(postId);
 }
