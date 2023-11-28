@@ -35,31 +35,33 @@ async function loadPosts(){
   // Format the posts
   let postsHtml = postsJson.map(postInfo => {
       return `
-      <div class="card shadow-sm">
-        <a href="https://www.youtube.com/watch?v=${escapeHTML(postInfo.videoData.id)}" target="_blank" rel="noopener noreferrer">
-          <img src="${escapeHTML(postInfo.videoData.snippet.thumbnails.high.url)}" class="card-img-top">
-        </a>
-        <div class="card-body">
-          <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
-          <p class="card-text">${escapeHTML(postInfo.description)}</p>
-          <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
-          <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${escapeHTML(postInfo.created_date)}</div>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="btn-group">
-              ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
-                `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
-                `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
-              <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
-            </div>
-            <br>
-            <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
-            <div id='comments-box-${postInfo.id}' class="comments-box d-none">
-              <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
-              <div id='comments-${postInfo.id}'></div>
-              <div class="new-comment-box ${myIdentity? "": "d-none"}">
-                New Comment:
-                <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
-                <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
+      <div class="col">
+        <div class="card shadow-sm">
+          <a href="https://www.youtube.com/watch?v=${escapeHTML(postInfo.videoData.id)}" target="_blank" rel="noopener noreferrer">
+            <img src="${escapeHTML(postInfo.videoData.snippet.thumbnails.high.url)}" class="card-img-top">
+          </a>
+          <div class="card-body">
+            <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
+            <p class="card-text">${escapeHTML(postInfo.description)}</p>
+            <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
+            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${escapeHTML(postInfo.created_date)}</div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
+                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
+                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
+                <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
+              </div>
+              <br>
+              <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
+              <div id='comments-box-${postInfo.id}' class="comments-box d-none">
+                <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
+                <div id='comments-${postInfo.id}'></div>
+                <div class="new-comment-box ${myIdentity? "": "d-none"}">
+                  New Comment:
+                  <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
+                  <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
+                </div>
               </div>
             </div>
           </div>
