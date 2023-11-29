@@ -43,6 +43,7 @@ router.get("/", async (req, res) => {
             username: post.username,
             description: post.description,
             videoData: await fetchVideoData(post.video_id),
+            created_date: post.created_date,
             id: post._id,
             likes: post.likes
           };
