@@ -23,7 +23,7 @@ async function loadIdentity(){
     } else { // logged out
       myIdentity = undefined;
       identity_div.innerHTML = `
-      <a href="signin" class="btn btn-outline-secondary" role="button">Sign in</a>`;
+      <a href="signin" class="btn btn-primary" role="button">Sign in</a>`;
       if(document.getElementById("make_post_div")){
         document.getElementById("make_post_div").classList.add("d-none");
       }

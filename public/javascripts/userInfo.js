@@ -14,12 +14,12 @@ async function loadUserInfo(){
     if(username==myIdentity){
         document.getElementById("username-span").innerText= `You (${username})`;
         document.getElementById("user_info_new_div").classList.remove("d-none");
-        
+
     }else{
         document.getElementById("username-span").innerText=username;
         document.getElementById("user_info_new_div").classList.add("d-none");
     }
-    
+
     //TODO: do an ajax call to load whatever info you want about the user from the user table
 
     loadUserInfoPosts(username)
@@ -28,7 +28,7 @@ async function loadUserInfo(){
 
 async function loadUserInfoPosts(username){
     document.getElementById("posts_box").innerText = "Loading...";
-    let postsJson = await fetchJSON(`api/${apiVersion}/posts?username=${encodeURIComponent(username)}`);
+    let postsJson = await fetchJSON(`api/posts?username=${encodeURIComponent(username)}`);
     let postsHtml = postsJson.map(postInfo => {
         return `
         <div class="post">
@@ -37,7 +37,7 @@ async function loadUserInfoPosts(username){
             <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${escapeHTML(postInfo.created_date)}</div>
             <div class="post-interactions">
                 <div>
-                    <span title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}"> ${postInfo.likes ? `${postInfo.likes.length}` : 0} likes </span> &nbsp; &nbsp; 
+                    <span title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}"> ${postInfo.likes ? `${postInfo.likes.length}` : 0} likes </span> &nbsp; &nbsp;
                 </div>
                 <br>
                 <div><button onclick='deletePost("${postInfo.id}")' class="${postInfo.username==myIdentity ? "": "d-none"}">Delete</button></div>
