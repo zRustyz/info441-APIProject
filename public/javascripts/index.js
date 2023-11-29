@@ -77,7 +77,7 @@ async function loadPosts(){
             <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
             <p class="card-text">${escapeHTML(postInfo.description)}</p>
             <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
-            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${escapeHTML(postInfo.created_date)}</div>
+            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleDateString("en-us")}</div>
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
