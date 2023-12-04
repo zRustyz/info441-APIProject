@@ -25,8 +25,15 @@ async function main(){
     created_date: Date
   });
 
+  const userSchema = new mongoose.Schema({
+    username: String,
+    bio: String,
+    last_login: Date,
+  })
+
   models.Post = mongoose.model("Post", postSchema);
   models.Comment = mongoose.model("Comment", commentSchema);
+  models.User = mongoose.model("User", userSchema);
   console.log("mongoose models created");
 }
 
