@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "undefined/subscriptions/f8798492-6e76-4c15-9978-91fbc6cfbdf6/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/YTVideoSharer",
+  "appService.deploySubpath": "."
+}

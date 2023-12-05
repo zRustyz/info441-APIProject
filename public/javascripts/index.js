@@ -66,7 +66,7 @@ async function loadPosts(){
   let postsJson = await fetchJSON(`api/post`);
   // Format the posts
   let postsHtml = postsJson.map(postInfo => {
-    let deleteButton = myIdentity === postInfo.username ? `<button onclick='deletePost("${postInfo.id}")'>Delete</button>` : '';
+    let deleteButton = myIdentity === postInfo.username ? `<button class="btn btn-sm btn-danger" onclick='deletePost("${postInfo.id}")'><i class="bi bi-trash"></i></button>` : '';
       return `
       <div class="col">
         <div class="card shadow-sm">
@@ -78,24 +78,25 @@ async function loadPosts(){
             <p class="card-text">${escapeHTML(postInfo.description)}</p>
             <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
             <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleDateString("en-us")}</div>
+            <br>
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
                   `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
                   `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
                 <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
-                ${deleteButton}
               </div>
               <br>
-              <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
-              <div id='comments-box-${postInfo.id}' class="comments-box d-none">
-                <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
-                <div id='comments-${postInfo.id}'></div>
-                <div class="new-comment-box ${myIdentity? "": "d-none"}">
-                  New Comment:
-                  <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
-                  <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
-                </div>
+              ${deleteButton}
+              <button class="btn btn-sm btn-outline-secondary" onclick='toggleComments("${postInfo.id}")'>Show comments <i class="bi bi-chevron-down"></i></button>
+            </div>
+            <div id='comments-box-${postInfo.id}' class="comments-box d-none">
+              <button onclick='refreshComments("${postInfo.id}")')><i class="bi bi-arrow-clockwise"></i></button>
+              <div id='comments-${postInfo.id}'></div>
+              <div class="new-comment-box ${myIdentity? "": "d-none"}">
+                New Comment:
+                <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
+                <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
               </div>
             </div>
           </div>
