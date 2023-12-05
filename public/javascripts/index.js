@@ -13,8 +13,9 @@ async function init () {
         event.preventDefault();
         postVideo()
           .then(modal.hide())
+          .catch(error => console.log(error))
           .catch(modal.hide())
-          .then(showAlert("danger", "There was an error submitting your post."));
+          .catch(showAlert("danger", "There was an error submitting your post."));
       }
       form.classList.add('was-validated');
     }, false);
@@ -76,20 +77,19 @@ async function loadPosts(){
             frameborder="0"
             width="560"
             height="315"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
           <div class="card-body">
             <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
             <p class="card-text">${escapeHTML(postInfo.description)}</p>
             <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
-            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleString("en-us", { timeZone: 'UTC' })}</div>
+            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleString("en-us", { dateStyle: "medium", timeStyle: "short" })}</div>
             <br>
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
-                  `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'>❤️</button>` :
-                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}>❤️</button>`}
+                  `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'><i class="bi bi-heart-fill"></i></button>` :
+                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}><i class="bi bi-heart"></i></button>`}
                 <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
               </div>
               <br>
@@ -97,12 +97,12 @@ async function loadPosts(){
               <button class="btn btn-sm btn-outline-secondary" onclick='toggleComments("${postInfo.id}")'>Show comments <i class="bi bi-chevron-down"></i></button>
             </div>
             <div id='comments-box-${postInfo.id}' class="comments-box d-none">
-              <button onclick='refreshComments("${postInfo.id}")')><i class="bi bi-arrow-clockwise"></i></button>
+              <br>
+              <button class="btn btn-sm btn-outline-secondary" onclick='refreshComments("${postInfo.id}")')><i class="bi bi-arrow-clockwise"></i></button>
               <div id='comments-${postInfo.id}'></div>
-              <div class="new-comment-box ${myIdentity? "": "d-none"}">
-                New Comment:
-                <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
-                <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
+              <div class="input-group mb-3 new-comment-box ${myIdentity? "": "d-none"}">
+                <input type="text" class="form-control" placeholder="Write a comment..." id="new-comment-${postInfo.id}"></textarea>
+                <button class="btn btn-outline-secondary" onclick='postComment("${postInfo.id}")'>Post Comment</button>
               </div>
             </div>
           </div>
