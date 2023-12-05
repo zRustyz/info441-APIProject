@@ -70,14 +70,20 @@ async function loadPosts(){
       return `
       <div class="col">
         <div class="card shadow-sm">
-          <a href="https://www.youtube.com/watch?v=${escapeHTML(postInfo.videoData.id)}" target="_blank" rel="noopener noreferrer">
-            <img src="${escapeHTML(postInfo.videoData.snippet.thumbnails.high.url)}" class="card-img-top">
-          </a>
+          <iframe
+            src="https://www.youtube.com/embed/${escapeHTML(postInfo.videoData.id)}?modestbranding=1&rel=0"
+            class="card-img-top"
+            frameborder="0"
+            width="560"
+            height="315"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
           <div class="card-body">
             <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
             <p class="card-text">${escapeHTML(postInfo.description)}</p>
             <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
-            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleDateString("en-us")}</div>
+            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleString("en-us", { timeZone: 'UTC' })}</div>
             <br>
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
