@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
             sortOption = { 'likes.length': -1 };
             break;
         case 'comments':
-            sortOption = { 'commentsCount': -1 }; 
+            sortOption = { 'commentsCount': -1 };
             break;
         case 'date_asc':
             sortOption = { created_date: 1 };
@@ -97,7 +97,6 @@ router.post("/unlike", async (req, res) => {
     try {
       let posts = await req.models.Post.find({ _id: req.body.postID });
       if (posts[0].likes.includes(req.session.account.username)) {
-        console.log("test");
         await req.models.Post.findByIdAndUpdate(req.body.postID, { $pull: { likes: req.session.account.username }});
       }
       res.json({"status": "success"});

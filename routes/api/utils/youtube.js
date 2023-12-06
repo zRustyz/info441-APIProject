@@ -20,7 +20,6 @@ export function extractVideoID (url) {
 }
 
 export async function fetchVideoData (videoID) {
-  console.log(videoID);
   const youtube = google.youtube({
     version: "v3",
     auth: process.env.YT_API_KEY
@@ -30,8 +29,6 @@ export async function fetchVideoData (videoID) {
     part: "snippet,contentDetails,statistics",
     id: videoID
   });
-
-  console.log(response.data);
 
   if (response.data) {
     return response.data.items[0];
@@ -47,20 +44,17 @@ export async function getVideoPreview (url) {
     console.log(videoData);
     return (`
       <div class="card shadow-sm">
-        <a href="https://www.youtube.com/watch?v=${videoData.id}" target="_blank" rel="noopener noreferrer">
-          <img src="${videoData.snippet.thumbnails.high.url}" class="card-img-top">
-        </a>
+        <iframe
+          src="https://www.youtube.com/embed/${escapeHTML(videoData.id)}?modestbranding=1&rel=0"
+          class="card-img-top"
+          frameborder="0"
+          width="560"
+          height="315"
+          allowfullscreen>
+        </iframe>
         <div class="card-body">
           <h5 class="card-title">${videoData.snippet.title}</h5>
           <p class="card-text"><small class="text-body-secondary">${numberWithCommas(videoData.statistics.viewCount)} views</small></p>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-outline-secondary">❤️</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary disabled">0</button>
-            </div>
-
-            <small class="text-body-secondary">video duration</small>
-          </div>
         </div>
       </div>
     `);
