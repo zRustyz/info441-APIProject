@@ -59,12 +59,13 @@ function showAlert (context, message) {
 }
 
 async function loadPosts(){
+  let sortOption = document.getElementById('sort-select').value;
   document.getElementById("pageContent").innerHTML = `
-    <div class="spinner-border text-light" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
+      <div class="spinner-border text-light" role="status">
+          <span class="visually-hidden">Loading...</span>
+      </div>
   `;
-  let postsJson = await fetchJSON(`api/post`);
+  let postsJson = await fetchJSON(`api/post?sort=${sortOption}`);
   // Format the posts
   let postsHtml = postsJson.map(postInfo => {
     let deleteButton = myIdentity === postInfo.username ? `<button class="btn btn-sm btn-danger" onclick='deletePost("${postInfo.id}")'><i class="bi bi-trash"></i></button>` : '';
@@ -257,3 +258,14 @@ function toggleComments(postId) {
 function refreshComments(postId) {
   loadComments(postId);
 }
+
+async function deleteComment(commentId, postId) {
+  try {
+    await fetch(`/api/comment/${commentId}`, { method: 'DELETE' });
+    loadComments(postId);
+    showAlert("success", "Comment deleted successfully.");
+  } catch (error) {
+    showAlert("danger", "Error deleting comment.");
+  }
+}
+

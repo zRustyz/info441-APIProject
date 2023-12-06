@@ -57,6 +57,14 @@
           Entertainment
         </a>
       </li>
+      <div class="sorting-options">
+        <select id="sort-select" onchange="loadPosts()">
+            <option value="date_desc">Newest First</option>
+            <option value="date_asc">Oldest First</option>
+            <option value="likes">Most Likes</option>
+            <option value="comments">Most Comments</option>
+        </select>
+    </div>
     </ul>
     <hr>
     <div id="identity-div" class="d-grid">

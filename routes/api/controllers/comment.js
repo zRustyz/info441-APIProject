@@ -22,6 +22,9 @@ router.post("/", async (req, res) => {
         username: req.session.account.username,
       });
       await newComment.save();
+
+      await req.models.Post.findByIdAndUpdate(req.body.postID, { $inc: { commentsCount: 1 } });
+
       res.json({"status": "success"});
     } catch (error) {
       res.status(500).json({"status": "error", "error": error});

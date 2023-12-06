@@ -30,12 +30,24 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    let posts;
-    if (req.query.username) {
-      posts = await req.models.Post.find({ username: req.query.username });
-    } else {
-      posts = await req.models.Post.find();
+    let sortOption = {};
+    switch (req.query.sort) {
+        case 'likes':
+            sortOption = { 'likes.length': -1 };
+            break;
+        case 'comments':
+            sortOption = { 'commentsCount': -1 }; 
+            break;
+        case 'date_asc':
+            sortOption = { created_date: 1 };
+            break;
+        case 'date_desc':
+        default:
+            sortOption = { created_date: -1 };
+            break;
     }
+
+    let posts = await req.models.Post.find().sort(sortOption);
     let postData = await Promise.all(
       posts.map(async post => {
         try {
@@ -117,5 +129,6 @@ router.delete("/:postId", async (req, res) => {
     });
   }
 });
+
 
 export default router;
