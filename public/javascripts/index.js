@@ -173,12 +173,11 @@ async function postVideo(){
   document.getElementById("postStatus").innerHTML = "sending data..."
   let url = document.getElementById("video-input").value;
   let description = document.getElementById("description-input").value;
-  let category = document.getElementById("category-select").value;
 
   try{
       await fetchJSON(`api/post`, {
           method: "POST",
-          body: { url: url, description: description, category: category }
+          body: { url: url, description: description }
       })
   }catch(error){
       document.getElementById("postStatus").innerText = "Error"
