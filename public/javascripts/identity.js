@@ -33,6 +33,7 @@ async function loadIdentity(){
       Array.from(document.getElementsByClassName("new-comment-box")).forEach(e => e.classList.add("d-none"))
       Array.from(document.getElementsByClassName("heart-button-span")).forEach(e => e.classList.add("d-none"));
     }
+    return await identityInfo;
   } catch(error) {
     myIdentity = undefined;
     identity_div.innerHTML = `<div>

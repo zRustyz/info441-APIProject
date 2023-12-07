@@ -27,6 +27,7 @@ async function main() {
 
   const userSchema = new mongoose.Schema({
     username: String,
+    name: String,
     bio: String,
     last_login: Date,
   });

@@ -1,3 +1,5 @@
+identityInfo = {}
+
 async function init () {
   // Fetch the modal element
   let modal = new bootstrap.Modal("#createPost");
@@ -21,13 +23,12 @@ async function init () {
     }, false);
   });
 
-
   let urlInput = document.getElementById("video-input");
   urlInput.onkeyup = previewVideo;
   urlInput.onchange = previewVideo;
   urlInput.onclick = previewVideo;
 
-  await loadIdentity();
+  identityInfo = await loadIdentity();
   loadPosts();
 }
 
@@ -59,6 +60,8 @@ function showAlert (context, message) {
 }
 
 async function loadPosts(){
+  document.getElementById('your-profile-button').classList.remove("active")
+  document.getElementById('home-button').classList.add("active")
   let sortOption = document.getElementById('sort-select').value;
   document.getElementById("pageContent").innerHTML = `
       <div class="spinner-border text-light" role="status">
@@ -67,6 +70,12 @@ async function loadPosts(){
   `;
   let postsJson = await fetchJSON(`api/post?sort=${sortOption}`);
   // Format the posts
+  let postsHtml = formatPosts(postsJson);
+  document.getElementById("pageContent").innerHTML = postsHtml;
+  return;
+}
+
+function formatPosts(postsJson) {
   let postsHtml = postsJson.map(postInfo => {
     let deleteButton = myIdentity === postInfo.username ? `<button class="btn btn-sm btn-danger" onclick='deletePost("${postInfo.id}")'><i class="bi bi-trash"></i></button>` : '';
       return `
@@ -84,7 +93,7 @@ async function loadPosts(){
             <h5 class="card-title">${escapeHTML(postInfo.videoData.snippet.title)}</h5>
             <p class="card-text">${escapeHTML(postInfo.description)}</p>
             <p class="card-text"><small class="text-body-secondary">${escapeHTML(numberWithCommas(postInfo.videoData.statistics.viewCount))} views</small></p>
-            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleString("en-us", { dateStyle: "medium", timeStyle: "short" })}</div>
+            <div><a href="#" onclick="getProfile('${escapeHTML(postInfo.username)}')">${escapeHTML(postInfo.username)}</a>, ${(new Date(escapeHTML(postInfo.created_date))).toLocaleString("en-us", { dateStyle: "medium", timeStyle: "short" })}</div>
             <br>
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
@@ -110,8 +119,8 @@ async function loadPosts(){
         </div>
       </div>`
   }).join("\n");
-  document.getElementById("pageContent").innerHTML = postsHtml;
-  return;
+
+  return postsHtml
 }
 
 let lastTypedUrl = ""
@@ -269,7 +278,49 @@ async function deleteComment(commentId, postId) {
   }
 }
 
-function getMyProfile() {
-  const content = document.getElementById('pageContent')
-  content.innerHTML=""
+async function saveUserInfo(){
+  let newBio = document.getElementById('editBio').value
+  let responseJson = await fetchJSON(`api/user/profile`, {
+      method: "POST",
+      body: {username: identityInfo.userInfo.username, newBio: newBio}
+  })
+  getMyProfile()
+  //TODO: do an ajax call to save whatever info you want about the user from the user table
+  //see postComment() in the index.js file as an example of how to do this
 }
+
+function getMyProfile() {
+  getProfile(identityInfo.userInfo.username)
+  document.getElementById('your-profile-button').classList.add("active")
+  document.getElementById('home-button').classList.remove("active")
+}
+
+async function getProfile(username) {
+  const content = document.getElementById('pageContent')
+  const info = await fetchJSON(`api/user/profile?username=${username}`)
+  let postsJson = await fetchJSON(`api/post?username=${encodeURIComponent(username)}`)
+  const postHTML = formatPosts(postsJson)
+  let bio = info.bio ?? `${info.username} has not set up their bio yet`
+  let divClass = "d-none"
+  if (identityInfo.userInfo.username === username) {
+    divClass = ""
+  }
+  content.innerHTML = `
+  <div>
+    <h3>${info.name} (${info.username})</h3>
+    <p>Bio: ${bio}</p>
+    <p>Last Login: ${(new Date(info.lastLogin)).toLocaleString()}</p>
+  </div>
+    <div id="user_info_new_div" class="${divClass}">
+    <h3>Update User Info:</h3>
+    <input type="text" id="editBio" name="bio" placeholder="Edit Bio">
+    <br>
+    <button onclick="saveUserInfo()">Save User Info</button>
+  </div>
+  <div>
+    <h3>Videos Shared by ${info.name}</h3>
+    ${postHTML}
+  </div>`
+
+}
+

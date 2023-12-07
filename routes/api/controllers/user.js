@@ -19,6 +19,7 @@ router.get("/myIdentity", async (req, res) => {
     //updates the last login time
     const update = {
       username: info.username,
+      name: info.name,
       last_login: new Date(),
     }
     try {
@@ -40,10 +41,8 @@ router.get("/myIdentity", async (req, res) => {
 
 router.get('/profile', async(req, res) => {
   try {
-    console.log(req.query)
     let profile = await req.models.User.findOne({username: req.query.username})
-    console.log(profile.last_login)
-    const results = {username: profile.username, bio: profile.bio, lastLogin: profile.last_login}
+    const results = {username: profile.username, name: profile.name, bio: profile.bio, lastLogin: profile.last_login}
     res.json(results)
   } catch (error) {
     console.error(error);

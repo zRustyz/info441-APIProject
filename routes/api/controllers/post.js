@@ -46,8 +46,12 @@ router.get("/", async (req, res) => {
             sortOption = { created_date: -1 };
             break;
     }
-
-    let posts = await req.models.Post.find().sort(sortOption);
+    let filter = {}
+    if (req.query.username != null) {
+      filter = {username: req.query.username}
+    }
+    console.log(filter)
+    let posts = await req.models.Post.find(filter).sort(sortOption);
     let postData = await Promise.all(
       posts.map(async post => {
         try {
@@ -70,6 +74,8 @@ router.get("/", async (req, res) => {
     res.status(500).json({"status": "error", "error": error});
   }
 });
+
+
 
 router.post("/like", async (req, res) => {
   if (req.session.isAuthenticated) {
