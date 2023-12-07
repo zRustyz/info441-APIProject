@@ -98,8 +98,8 @@ function formatPosts(postsJson) {
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 ${postInfo.likes && postInfo.likes.includes(myIdentity) ?
-                  `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}")'><i class="bi bi-heart-fill"></i></button>` :
-                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}")' ${myIdentity? "": "disabled"}><i class="bi bi-heart"></i></button>`}
+                  `<button type="button" class="btn btn-sm btn-secondary" onclick='unlikePost("${postInfo.id}", "${escapeHTML(postInfo.username)}")'><i class="bi bi-heart-fill"></i></button>` :
+                  `<button type="button" class="btn btn-sm btn-outline-secondary" onclick='likePost("${postInfo.id}", "${escapeHTML(postInfo.username)}")' ${myIdentity? "": "disabled"}><i class="bi bi-heart"></i></button>`}
                 <button title="${postInfo.likes? escapeHTML(postInfo.likes.join(", ")) : ""}" type="button" class="btn btn-sm btn-outline-secondary disabled">${postInfo.likes ? `${postInfo.likes.length}` : 0}</button>
               </div>
               <br>
@@ -194,21 +194,32 @@ async function postVideo(){
   return;
 }
 
-async function likePost(postID){
+async function likePost(postID, postUsername){
   await fetchJSON(`api/post/like`, {
       method: "POST",
       body: {postID: postID}
   })
-  loadPosts();
+
+  if (!document.getElementById('home-button').classList.contains("active")) {
+    getProfile(postUsername)
+  } else {
+    loadPosts();
+  }
+
 }
 
 
-async function unlikePost(postID){
+async function unlikePost(postID, postUsername){
   await fetchJSON(`api/post/unlike`, {
       method: "POST",
       body: {postID: postID}
   })
-  loadPosts();
+
+  if (!document.getElementById('home-button').classList.contains("active")) {
+    getProfile(postUsername)
+  } else {
+    loadPosts();
+  }
 }
 
 async function deletePost(postId){
@@ -292,19 +303,23 @@ async function saveUserInfo(){
 function getMyProfile() {
   getProfile(identityInfo.userInfo.username)
   document.getElementById('your-profile-button').classList.add("active")
-  document.getElementById('home-button').classList.remove("active")
 }
 
 async function getProfile(username) {
+  document.getElementById('home-button').classList.remove("active")
   const content = document.getElementById('pageContent')
   const info = await fetchJSON(`api/user/profile?username=${username}`)
   let postsJson = await fetchJSON(`api/post?username=${encodeURIComponent(username)}`)
   const postHTML = formatPosts(postsJson)
   let bio = info.bio ?? `${info.username} has not set up their bio yet`
   let divClass = "d-none"
-  if (identityInfo.userInfo.username === username) {
-    divClass = ""
+
+  if ("userInfo" in identityInfo) {
+    if(identityInfo.userInfo.username === username) {
+      divClass = ""
+    }
   }
+
   content.innerHTML = `
   <div>
     <h3>${info.name} (${info.username})</h3>
