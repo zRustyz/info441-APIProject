@@ -301,7 +301,9 @@ async function saveUserInfo(){
 
 function getMyProfile() {
   getProfile(identityInfo.userInfo.username)
-  document.getElementById('your-profile-button').classList.add("active")
+  document.getElementById('your-profile-button').classList.add("active");
+  document.getElementById('ome-button').classList.remove("active");
+
 }
 
 async function getProfile(username) {
@@ -327,9 +329,9 @@ async function getProfile(username) {
   </div>
     <div id="user_info_new_div" class="${divClass}">
     <h3>Update User Info:</h3>
-    <input type="text" id="editBio" name="bio" placeholder="Edit Bio">
+    <input type="text" class="form-control" id="editBio" name="bio" placeholder="Edit Bio">
     <br>
-    <button onclick="saveUserInfo()">Save User Info</button>
+    <button class="btn btn-primary" onclick="saveUserInfo()">Save User Info</button>
   </div>
   <div>
     <h3>Videos Shared by ${info.name}</h3>
