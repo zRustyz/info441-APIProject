@@ -269,3 +269,7 @@ async function deleteComment(commentId, postId) {
   }
 }
 
+function getMyProfile() {
+  const content = document.getElementById('pageContent')
+  content.innerHTML=""
+}

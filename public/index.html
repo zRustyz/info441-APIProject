@@ -28,33 +28,15 @@
       </li>
       <li>
       <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
+        <a href="#" class="nav-link active" aria-current="page" onclick="loadPosts()">
           <i class="bi pe-none me-2 bi-house-door" width="16" height="16"></i>
           Home
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link text-white">
-          <i class="bi pe-none me-2 bi-fire" width="16" height="16"></i>
-          Trending
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <i class="bi pe-none me-2 bi-emoji-laughing" width="16" height="16"></i>
-          Funny
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <i class="bi pe-none me-2 bi-controller" width="16" height="16"></i>
-          Gaming
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <i class="bi pe-none me-2 bi-film" width="16" height="16"></i>
-          Entertainment
+        <a href="#" class="nav-link text-white" onclick="getMyProfile()">
+          <i class="bi pe-none me-2 bi-person-circle" width="16" height="16"></i>
+          Your Profile
         </a>
       </li>
       <hr>
@@ -98,7 +80,7 @@
 
 </main>
 
-<!-- New post modal -->
+<!-- New post model -->
 <div class="modal fade" id="createPost" tabindex="-1" aria-labelledby="createPostLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

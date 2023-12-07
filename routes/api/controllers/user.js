@@ -37,4 +37,31 @@ router.get("/myIdentity", async (req, res) => {
   }
 });
 
+
+router.get('/profile', async(req, res) => {
+  try {
+    console.log(req.query)
+    let profile = await req.models.User.findOne({username: req.query.username})
+    console.log(profile.last_login)
+    const results = {username: profile.username, bio: profile.bio, lastLogin: profile.last_login}
+    res.json(results)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', error: error.message });
+  }
+});
+
+router.post('/profile', async(req, res) => {
+  try {
+    const {username, newBio} = req.body
+    const update = {bio: newBio}
+    await req.models.User.findOneAndUpdate({username: username}, update)
+    res.status(200).json({status: 'succuess'})
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({status: 'error', error: error.message})
+  }
+})
+
+
 export default router;
