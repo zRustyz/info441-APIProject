@@ -8,16 +8,16 @@ async function init () {
   // Loop over them and prevent submission
   let validation = Array.prototype.filter.call(forms, function(form) {
     form.addEventListener('submit', function(event) {
-      if (form.checkValidity() === false) {
+      if (!form.checkValidity()) {
         event.preventDefault();
         event.stopPropagation();
+        showAlert("danger", "There was an error submitting your post.")
       } else { // If the form is valid
         event.preventDefault();
         postVideo()
           .then(modal.hide())
           .catch(error => console.log(error))
           .catch(modal.hide())
-          .catch(showAlert("danger", "There was an error submitting your post."));
       }
       form.classList.add('was-validated');
     }, false);
