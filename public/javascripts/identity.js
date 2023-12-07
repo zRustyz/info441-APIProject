@@ -15,6 +15,9 @@ async function loadIdentity(){
         document.getElementById("make_post_div").classList.remove("d-none");
       }
       // Enable the create post button
+      document.getElementById("your-profile-button").classList.remove("disabled");
+      document.getElementById("your-profile-button").classList.add("text-white");
+      document.getElementById("your-profile-button").ariaDisabled = false;
       document.getElementById("create-post-button").classList.remove("disabled");
       document.getElementById("create-post-button").classList.add("text-white");
       document.getElementById("create-post-button").ariaDisabled = false;
